@@ -1,0 +1,51 @@
+heat_template_version: rocky
+description: "Cloud provider network definitions"
+
+resources:
+  provider-net-635:
+    type: OS::Neutron::ProviderNet
+    properties:
+      admin_state_up: true
+      name: "provider-net-635"
+      port_security_enabled: true
+      mtu: 1500
+      network_type: vlan
+      physical_network: "datacentre"
+      router_external: true
+      segmentation_id: 635
+      shared: true
+      tags:
+        - expressroute
+        - customer_a_network
+        - billing_12345
+
+
+  provider-subnet-635-1:
+    type: OS::Neutron::Subnet
+    depends_on: provider-net-635
+    properties:
+      allocation_pools:
+        - start: "172.16.35.5"
+          end: "172.16.35.200"
+      cidr: 172.16.35.0/24
+      enable_dhcp: true
+      name: "provider-subnet-635-1"
+      network:
+        get_resource: provider-net-635
+      tags:
+        - customer_a_dmz
+
+outputs:
+  output_vlan_635:
+    description: "vlan 635 info"
+    value:
+      get_attr:
+        - provider-net-635
+        - show
+
+  output_subnet_635_1:
+    description: "subnet 635-1 info"
+    value:
+      get_attr:
+        - provider-subnet-635-1
+        - show
