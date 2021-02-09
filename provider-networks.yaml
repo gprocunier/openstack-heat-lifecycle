@@ -8,7 +8,6 @@ resources:
       admin_state_up: true
       name: "provider-net-635"
       port_security_enabled: true
-      mtu: 1500
       network_type: vlan
       physical_network: "datacentre"
       router_external: true
